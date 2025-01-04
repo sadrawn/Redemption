@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-// define routes 
-
+// Define routes
 router.get('/', (req, res) => {
-    res.send('This is index shit');
-})
+    res.render('index');
+});
 
-
+// Export the router
 module.exports = router;
