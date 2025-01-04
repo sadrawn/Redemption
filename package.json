@@ -1,0 +1,23 @@
+{
+  "name": "redemption",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "watch-css": "tailwindcss -i ./input.css -o ./public/css/main.css --watch",
+    "build-css": "tailwindcss -i ./input.css -o ./public/css/main.css",
+    "start": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.9"
+  }
+}
