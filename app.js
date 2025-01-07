@@ -7,6 +7,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'public/views'));
 app.set('view engine', 'ejs');
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 // Import the router
 const router = require('./router'); // Ensure the path is correct
 
