@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher App</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body class="bg-veryDarkBlue text-white">
+
+    <!-- Main Container -->
+    <div class="flex justify-center items-center min-h-screen">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+            <h1 class="text-2xl font-bold text-center mb-4">Caesar Cipher</h1>
+
+            <!-- Input Form -->
+            <div class="space-y-4">
+                <div>
+                    <label for="message" class="block text-sm font-medium">Message</label>
+                    <input type="text" id="message"
+                        class="w-full p-2 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white"
+                        placeholder="Enter your message">
+                </div>
+
+                <div>
+                    <label for="shift" class="block text-sm font-medium">Shift (0-25)</label>
+                    <input type="number" id="shift"
+                        class="w-full p-2 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white"
+                        placeholder="Enter shift value" min="0" max="25">
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button id="encryptBtn"
+                        class="w-1/2 bg-green-600 hover:bg-green-500 text-white font-bold p-2 rounded mt-4">Encrypt</button>
+                    <button id="decryptBtn"
+                        class="w-1/2 bg-red-600 hover:bg-red-500 text-white font-bold p-2 rounded mt-4">Decrypt</button>
+                </div>
+
+                <div>
+                    <label for="result" class="block text-sm font-medium">Result</label>
+                    <textarea id="result"
+                        class="w-full p-2 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white" rows="4"
+                        readonly placeholder="Result will appear here"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Caesar Cipher Encryption
+        function caesarCipher(str, shift, action) {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let result = '';
+            const shiftAmount = action === 'encrypt' ? shift : 26 - shift; // Reverse shift for decryption
+
+            for (let i = 0; i < str.length; i++) {
+                let char = str[i];
+                if (alphabet.indexOf(char.toUpperCase()) !== -1) {
+                    const isLowerCase = char === char.toLowerCase();
+                    const charIndex = alphabet.indexOf(char.toUpperCase());
+                    let newIndex = (charIndex + shiftAmount) % 26;
+
+                    // Handle wrapping around alphabet
+                    let newChar = alphabet[newIndex];
+                    if (isLowerCase) newChar = newChar.toLowerCase();
+
+                    result += newChar;
+                } else {
+                    result += char; // Non-alphabet characters are unchanged
+                }
+            }
+
+            return result;
+        }
+
+        // Handle Encrypt button
+        document.getElementById('encryptBtn').addEventListener('click', function () {
+            const message = document.getElementById('message').value;
+            const shift = parseInt(document.getElementById('shift').value);
+            if (message && !isNaN(shift)) {
+                const encryptedMessage = caesarCipher(message, shift, 'encrypt');
+                document.getElementById('result').value = encryptedMessage;
+            } else {
+                alert('Please enter a valid message and shift value');
+            }
+        });
+
+        // Handle Decrypt button
+        document.getElementById('decryptBtn').addEventListener('click', function () {
+            const message = document.getElementById('message').value;
+            const shift = parseInt(document.getElementById('shift').value);
+            if (message && !isNaN(shift)) {
+                const decryptedMessage = caesarCipher(message, shift, 'decrypt');
+                document.getElementById('result').value = decryptedMessage;
+            } else {
+                alert('Please enter a valid message and shift value');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
