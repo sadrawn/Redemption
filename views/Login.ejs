@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body class="bg-darkGray text-white flex items-center justify-center min-h-screen">
+
+    <!-- Login Form Container -->
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 class="text-3xl font-bold text-center text-red-500 mb-6">Login</h2>
+
+        <!-- Form -->
+        <form action="/hktpuwhnl" method="POST" class="space-y-4">
+            <!-- Username Field -->
+            <h1 class="text-red-500">
+                <%= errorMessage %>
+            </h1>
+            <div>
+                <label for="username" class="block text-sm font-medium text-white">Username</label>
+                <input type="text" id="username" name="username"
+                    class="w-full p-3 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white"
+                    placeholder="Enter your username" required>
+            </div>
+
+            <!-- Password Field -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-white">Password</label>
+                <input type="password" id="password" name="password"
+                    class="w-full p-3 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white"
+                    placeholder="Enter your password" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit"
+                    class="w-full p-3 bg-red-500 text-white font-bold rounded hover:bg-red-600">Login</button>
+            </div>
+
+            <!-- Register Link -->
+            <div class="text-center mt-4">
+                <p class="text-sm text-gray-400">Don't have an account? Be tokhmam
+                </p>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="/css/main.css">
+
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="bg-darkGray text-white w-64 p-4 space-y-4">
+            <h2 class="text-2xl font-bold">Admin Panel</h2>
+            <nav>
+                <a href="/admin/dashboard" class="block py-2 px-3 rounded hover:bg-blue-700">Dashboard</a>
+                <a href="/admin/users" class="block py-2 px-3 rounded hover:bg-blue-700">Users</a>
+                <a href="/admin/setting" class="block py-2 px-3 rounded hover:bg-blue-700">setting</a>
+                <a href="/admin/logout" class="block py-2 px-3 rounded hover:bg-blue-700">Logout</a>
+            </nav>
+        </div>
+
+
+
+        <% if (page === 'dashboard') { %>
+            <div class="flex-1 p-6 bg-darkGrayishBlue" id="dashboard">
+                <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+    
+            </div>
+            <!-- Dashboard content goes here -->
+        <% } else if (page === 'users') { %>
+            <div class="flex-1 p-6 bg-darkGrayishBlue" id="dashboard">
+                <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+    
+            </div>
+            <!-- Users content goes here -->
+        <% } else if (page === 'setting') { %>
+            <div class="flex-1 p-6 bg-darkGrayishBlue" id="dashboard">
+                <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+    
+            </div>
+            <!-- Settings content goes here -->
+        <% } else if (page === 'logout')  { %>
+            <div class="flex-1 p-6 bg-darkGrayishBlue" id="dashboard">
+                <h1 class="text-3xl font-bold mb-6 text-white">Do you want to logout ? </h1>
+                <form action="/admin/logout" method="post">
+                    <button type="submit" class="w-[100px] h-[40px] rounded-full text-white bg-blue-500">Log out</button>
+                </form>
+            </div>
+        <% } %>
+        <!-- setting -->
+        <!-- logout -->
+        <!-- dashboard -->
+        
+    </div>
+     <!-- users -->
+
+
+</body>
+
+</html>

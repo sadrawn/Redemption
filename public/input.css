@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define the custom font */
+@font-face {
+    font-family: 'poppins';
+    src: url('./Fonts/Poppins-Black.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'blood';
+    src: url('./Fonts/bloody.ttf') format('truetype');
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'poppins';
+    z-index: 100;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+#blood {
+    font-family: 'blood';
+}

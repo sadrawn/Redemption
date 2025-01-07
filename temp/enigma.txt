@@ -1,0 +1,95 @@
+class EnigmaMachine {
+  constructor() {
+    this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    
+    // Initialize rotors with example mappings
+    this.rotors = [
+      'EKMFLGDQVZNTOWYHXUSPAIBRCJ'.split(''), // Rotor I
+      'AJDKSIRUXBLHWTMCQGZNPYFVOE'.split(''), // Rotor II
+      'BDFHJLCPRTXVZNYEIWGAKMUSQO'.split('')  // Rotor III
+    ];
+
+    // Reflector B (example)
+    this.reflector = 'YRUHQSLDPXNGOKMIEBFZCWVJAT'.split('');
+
+    // Plugboard (empty for simplicity)
+    this.plugboard = {};
+
+    // Set rotor positions
+    this.rotorPositions = [0, 0, 0]; // Initial positions of the rotors
+  }
+
+  // Step the rotor positions after each letter press
+  stepRotors() {
+    this.rotorPositions[0]++;
+    if (this.rotorPositions[0] === 26) {
+      this.rotorPositions[0] = 0;
+      this.rotorPositions[1]++;
+      if (this.rotorPositions[1] === 26) {
+        this.rotorPositions[1] = 0;
+        this.rotorPositions[2]++;
+        if (this.rotorPositions[2] === 26) {
+          this.rotorPositions[2] = 0;
+        }
+      }
+    }
+  }
+
+  // Pass the letter through the plugboard
+  passPlugboard(letter) {
+    return this.plugboard[letter] || letter;
+  }
+
+  // Pass the letter through the rotors (forward direction)
+  passRotorsForward(letter, direction = 1) {
+    let position = this.alphabet.indexOf(letter);
+    for (let i = 0; i < this.rotors.length; i++) {
+      position = this.alphabet.indexOf(this.rotors[i][(position + this.rotorPositions[i] * direction) % 26]);
+    }
+    return this.alphabet[position];
+  }
+
+  // Pass the letter through the reflector
+  passReflector(letter) {
+    return this.reflector[this.alphabet.indexOf(letter)];
+  }
+
+  // Pass the letter through the rotors (reverse direction)
+  passRotorsReverse(letter) {
+    let position = this.alphabet.indexOf(letter);
+    for (let i = this.rotors.length - 1; i >= 0; i--) {
+      position = (this.alphabet.indexOf(this.rotors[i].indexOf(this.alphabet[position])) - this.rotorPositions[i] + 26) % 26;
+    }
+    return this.alphabet[position];
+  }
+
+  // Encrypt or decrypt a message
+  processMessage(message) {
+    message = message.toUpperCase().replace(/[^A-Z]/g, ''); // Only letters
+    let result = '';
+    
+    for (let char of message) {
+      char = this.passPlugboard(char); // Pass through plugboard
+      char = this.passRotorsForward(char); // Forward through rotors
+      char = this.passReflector(char); // Reflect
+      char = this.passRotorsReverse(char); // Reverse through rotors
+      char = this.passPlugboard(char); // Pass through plugboard again
+      result += char;
+
+      this.stepRotors(); // Step rotors after each letter
+    }
+    
+    return result;
+  }
+}
+
+// Example usage
+const enigma = new EnigmaMachine();
+
+// Encrypt a message
+const encryptedMessage = enigma.processMessage("HELLO");
+console.log(`Encrypted Message: ${encryptedMessage}`);
+
+// Decrypt the message (same process, as Enigma is symmetric)
+const decryptedMessage = enigma.processMessage(encryptedMessage);
+console.log(`Decrypted Message: ${decryptedMessage}`);

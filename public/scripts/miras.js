@@ -9,8 +9,7 @@ hamburgerBtn.addEventListener('click', () => {
 });
 
 
-const buttonImage = document.getElementById('buttonImage');
-buttonImage.addEventListener('click', () => {
-    const hover = document.getElementById('hover');
-    hover.classList.toggle('backdrop-blur-md');
-})
+// const darkOverlay = document.getElementById('darkOverlay');
+// darkOverlay.addEventListener('click', () => {
+//     darkOverlay.classList.toggle('backdrop-blur-md');
+// });

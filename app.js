@@ -1,20 +1,41 @@
 const express = require('express');
-const app = express();
 const path = require('path');
+const session = require('express-session');
+const crypto = require('crypto');
+require('./init.js');
+const app = express();
+
+// Generate a strong secret key for sessions
+const secretKey = crypto.randomBytes(32).toString('hex');
+
+// Middleware for static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Render Engine 
-app.set('views', path.join(__dirname, 'public/views'));
+// Session configuration
+app.use(session({
+    secret: secretKey, // Use the generated secret key
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 60000 * 60 * 24 // 1 Day
+    }
+}));
+
+// Render Engine setup
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// Middleware for parsing request bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// Import the router
-const router = require('./router'); // Ensure the path is correct
 
-// Use the router
+// Import routers
+const router = require('./routes/routes'); // General routes
+const adminRouter = require('./routes/adminRoutes'); // Admin page routes
+
+// Mount routers
 app.use('/', router);
-
+app.use('/admin', adminRouter);
 
 // Start the server
 const IP = 'localhost';
