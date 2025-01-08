@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Define the custom font */
-@font-face {
-    font-family: 'poppins';
-    src: url('./Fonts/Poppins-Black.ttf') format('truetype');
-}
 
 @font-face {
     font-family: 'blood';
@@ -17,11 +12,11 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: 'poppins';
+    /* font-family: 'poppins'; */
     z-index: 100;
 }
 
-body::-webkit-scrollbar {
+::-webkit-scrollbar {
     display: none;
 }
 

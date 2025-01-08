@@ -2,12 +2,23 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const { db } = require('../database/database');
+const fs = require('fs');
+const path = require('path');
 // Define routes
 router.get('/', (req, res) => {
-    let bg_image = '172222-1240x2618-phone-hd-the-shawshank-redemption-background-image (1).jpg';
-    res.render('index', { bg_image });
-});
+    fs.readFile(path.resolve(__dirname, '../data/bg.txt'), (err, image) => {
+        if (err) {
+            console.error('Error reading file data:', err);
+            return res.render('index', { bg_image: '' }); // Render with a default image
+        }
 
+        const bg_image = `/${image}`;
+        console.log(bg_image);
+
+        // Render after reading the file
+        res.render('index', { bg_image });
+    });
+});
 
 router.get('/cryptography', (req, res) => {
     res.render('Cryptography');

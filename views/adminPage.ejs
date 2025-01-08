@@ -6,58 +6,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
     <link rel="stylesheet" href="/css/main.css">
-
+    <!-- awesome fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen">
         <!-- Sidebar -->
         <div class="bg-darkGray text-white w-64 p-4 space-y-4">
-            <h2 class="text-2xl font-bold">Admin Panel</h2>
+            <h2 class="text-2xl font-bold cursor-default">Admin Panel</h2>
             <nav>
+                <a href="/" class="block py-2 px-3 rounded bg-red-700">Go to Website</a>
                 <a href="/admin/dashboard" class="block py-2 px-3 rounded hover:bg-blue-700">Dashboard</a>
                 <a href="/admin/users" class="block py-2 px-3 rounded hover:bg-blue-700">Users</a>
-                <a href="/admin/setting" class="block py-2 px-3 rounded hover:bg-blue-700">setting</a>
+                <a href="/admin/setting" class="block py-2 px-3 rounded hover:bg-blue-700">Setting</a>
                 <a href="/admin/logout" class="block py-2 px-3 rounded hover:bg-blue-700">Logout</a>
             </nav>
         </div>
 
-
-
-        <% if (page === 'dashboard') { %>
-            <div class="flex-1 p-6 bg-darkGrayishBlue" id="dashboard">
+        <!-- Main Content -->
+        <% if (page==='dashboard' ) { %>
+            <div class="flex-1 p-6 bg-white" id="dashboard">
                 <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
-    
             </div>
-            <!-- Dashboard content goes here -->
-        <% } else if (page === 'users') { %>
-            <div class="flex-1 p-6 bg-darkGrayishBlue" id="dashboard">
-                <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
-    
-            </div>
-            <!-- Users content goes here -->
-        <% } else if (page === 'setting') { %>
-            <div class="flex-1 p-6 bg-darkGrayishBlue" id="dashboard">
-                <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
-    
-            </div>
-            <!-- Settings content goes here -->
-        <% } else if (page === 'logout')  { %>
-            <div class="flex-1 p-6 bg-darkGrayishBlue" id="dashboard">
-                <h1 class="text-3xl font-bold mb-6 text-white">Do you want to logout ? </h1>
-                <form action="/admin/logout" method="post">
-                    <button type="submit" class="w-[100px] h-[40px] rounded-full text-white bg-blue-500">Log out</button>
-                </form>
-            </div>
-        <% } %>
-        <!-- setting -->
-        <!-- logout -->
-        <!-- dashboard -->
-        
-    </div>
-     <!-- users -->
+            <% } else if (page==='users' ) { %>
+                <div class="flex-1 p-6 bg-white" id="users">
+                    <h1 class="text-3xl font-bold mb-6">Users</h1>
+                </div>
+                <!-- setting -->
+                <% } else if (page==='setting' ) { %>
+                    <div class="flex-1 p-6 bg-white overflow-x-scroll" id="setting">
+                        <h1 class="text-3xl font-bold mb-6">Setting</h1>
+                        <h1 class="text-3xl font-bold mb-6">
+                            <% if (typeof message !=='undefined' && message) { %>
+                                <%= message %>
+                                    <% } %>
+                        </h1>
+                        <!-- Form -->
+                        <form class="flex justify-between border p-2 rounded-xl border-Red_1 items-center"
+                            action="/admin/setting/upload" method="post" enctype="multipart/form-data">
+                            <div class="flex w-auto gap-3">
+                                <button type="button" id="toggle-button"><i
+                                        class="fa fa-caret-down cursor-pointer w-5 h-5"></i></button>
+                                <h2>Background Image:</h2>
+                            </div>
+                            <div
+                                class="relative cursor-pointer flex justify-center items-center flex-1 h-[50px] text-center ">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="flex items-center">
+                                        <i class="fa fa-file mx-3 text-Red_1"></i>Select File
+                                    </div>
+                                    <input type="file" class="appearance-none absolute inset-0 opacity-0 cursor-pointer"
+                                        name="file" accept="image/*" id="fileInput" />
+                                    <p id="file-state" class="mx-6">Nothing selected!</p>
+                                </div>
+                            </div>
+                            <button type="submit"
+                                class="text-white w-[100px] h-[40px] rounded-full bg-Red_1 transition duration-[0.25s] hover:bg-white border border-Red_1 hover:text-Red_1">
+                                Submit
+                            </button>
+                        </form>
+                        <div id="grid-container"
+                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 my-2 gap-4 overflow-hidden transition-all duration-500 ease-in-out h-0 opacity-0">
+                            <% if (typeof images !=='undefined' && images.length> 0) { %>
+                                <% images.forEach(image=> { %>
+                                    <div id="imageSelector"
+                                        class="imageSelector p-2 border border-gray-100 flex flex-col items-center text-center transition duration-200 hover:veryLightGray cursor-pointer">
+                                        <img src="<%= image %>" alt="<%= image.split('/').pop() %>"
+                                            class="w-[300px] h-[300px] object-cover rounded-md">
+                                    </div>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <p class="text-gray-500 text-center col-span-full">
+                                                <% if (typeof images !=='undefined' && images.length> 0) { %>
+                                                    <%= imageError %>
+                                                        <% } %>
+                                            </p>
+                                            <% } %>
 
+                                                <!-- Submit Button -->
+                                                <div class="col-span-full text-center">
+                                                    <form action="/admin/setting/image" method="POST">
+                                                        <input type="hidden" name="bg_image" id="hiddenInput">
+                                                        <button type="submit" name="action" value="set"
+                                                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-white hover:text-blue-600 border border-blue-600">
+                                                            Select Image and Submit
+                                                        </button>
+                                                        <button type="submit" name="action" value="delete"
+                                                            class="px-4 py-2 bg-Red_1 text-white rounded-md hover:bg-white hover:text-Red_1 border border-Red_1">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                        </div>
 
+                        <% } else if (page==='logout' ) { %>
+                            <div class="flex-1 p-6 bg-white" id="logout">
+                                <h1 class="text-3xl font-bold mb-6">Do you want to logout?</h1>
+                                <form action="/admin/logout" method="post">
+                                    <button type="submit"
+                                        class="text-white w-[100px] h-[40px] rounded-full bg-Red_1 transition duration-[0.25s] hover:bg-white border border-Red_1 hover:text-Red_1">
+                                        Log Out
+                                    </button>
+                                </form>
+                            </div>
+                            <% } %>
+
+                    </div>
+                    <script>
+                        const gridContainer = document.getElementById('grid-container');
+                        const toggleButton = document.getElementById('toggle-button');
+
+                        toggleButton.addEventListener('click', () => {
+                            if (gridContainer.classList.contains('h-0')) {
+                                // Show the grid
+                                gridContainer.classList.remove('h-0', 'opacity-0');
+                                gridContainer.classList.add('h-auto', 'opacity-100');
+                            } else {
+                                // Hide the grid
+                                gridContainer.classList.remove('h-auto', 'opacity-100');
+                                gridContainer.classList.add('h-0', 'opacity-0');
+                            }
+                        });
+                        const imageSelector = document.querySelectorAll('.imageSelector');
+                        const hiddenInput = document.getElementById('hiddenInput');
+
+                        imageSelector.forEach((image) => {
+                            image.addEventListener('click', () => {
+                                // Remove 'selected' and 'bg-blue-500' from all images
+                                imageSelector.forEach((img) => {
+                                    img.classList.remove('selected');
+                                    img.classList.remove('bg-gray-500');
+                                });
+
+                                // Add 'selected' and 'bg-blue-500' to the clicked image
+                                image.classList.add('selected');
+                                image.classList.add('bg-gray-500');
+
+                                // Update hidden input value to the clicked image's src
+                                let ha = image.querySelector('img').src.split('/');
+                                hiddenInput.value = ha[4];
+                            });
+                        });
+                        const fileInput = document.getElementById('fileInput');
+                        fileInput.addEventListener('input', () => {
+                            const p = document.getElementById('file-state');
+                            p.textContent = fileInput.files[0].name;
+                        })
+                    </script>
 </body>
 
 </html>

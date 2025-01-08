@@ -26,9 +26,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Middleware for parsing request bodies
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 // Import routers
 const router = require('./routes/routes'); // General routes
 const adminRouter = require('./routes/adminRoutes'); // Admin page routes
