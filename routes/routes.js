@@ -4,29 +4,8 @@ const bcrypt = require('bcrypt');
 const { db } = require('../database/database');
 const fs = require('fs');
 const path = require('path');
-// Define routes
-router.get('/', (req, res) => {
-    fs.readFile(path.resolve(__dirname, '../data/bg.txt'), (err, image) => {
-        if (err) {
-            console.error('Error reading file data:', err);
-            return res.render('index', { bg_image: '' }); // Render with a default image
-        }
 
-        const bg_image = `/${image}`;
-        console.log(bg_image);
-
-        // Render after reading the file
-        res.render('index', { bg_image });
-    });
-});
-
-router.get('/cryptography', (req, res) => {
-    res.render('Cryptography');
-})
-//7
-router.get('/hktpuwhnl', (req, res) => {
-    res.render('Login', { errorMessage: "" });
-})
+// middleware functions 
 
 // Function to hash a password asynchronously
 async function hashPassword(password) {
@@ -65,6 +44,32 @@ async function checkAdminLogin(username, password) {
         });
     });
 }
+
+
+// Define routes
+router.get('/', (req, res) => {
+    fs.readFile(path.resolve(__dirname, '../data/bg.txt'), (err, image) => {
+        if (err) {
+            console.error('Error reading file data:', err);
+            return res.render('index', { bg_image: '' }); // Render with a default image
+        }
+
+        const bg_image = `/${image}`;
+
+        // Render after reading the file
+        res.render('index', { bg_image });
+    });
+});
+
+router.get('/cryptography', (req, res) => {
+    res.render('Cryptography');
+})
+//7
+router.get('/hktpuwhnl', (req, res) => {
+    res.render('Login', { errorMessage: "" });
+})
+
+
 
 router.post('/hktpuwhnl', async (req, res) => {
     let { username, password } = req.body;
