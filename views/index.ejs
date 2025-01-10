@@ -48,6 +48,9 @@
             class="block text-white py-2 px-1 transition duration-[0.15s] hover:bg-darkBlue">Cryptography</a>
         <a href="https://t.me/RedemptionArcHQ" target="_blank"
             class="block text-white py-2 px-1 transition duration-[0.15s] hover:bg-darkBlue">Telegram Chanel</a>
+        <% if (session && session.login){ %>
+            <a href="/admin/dashboard" target="_blank" class="block text-white py-2 px-1 transition duration-[0.15s] hover:bg-darkBlue">adminPage</a>
+            <% } %>
     </div>
 
     <main class="w-full h-[800pxw] flex flex-col">
@@ -57,7 +60,7 @@
                 src="/images/<%= bg_image || '172222-1240x2618-phone-hd-the-shawshank-redemption-background-image (1).jpg' %>"
                 alt="Background Image" class="absolute inset-0 w-full h-full object-cover object-[50%50%] z-0">
             <!-- Dark Overlay -->
-            <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-md z-[1] buttonImage" id="darkOverlay">
+            <div class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-[1] buttonImage" id="darkOverlay">
             </div>
 
             <!-- Image Section -->
@@ -84,8 +87,6 @@
                 </h1>
             </div>
         </section>
-
-
         <!-- 2nd section -->
 
     </main>

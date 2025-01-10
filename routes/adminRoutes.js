@@ -109,12 +109,10 @@ router.get('/:page', (req, res) => {
         return res.render('login'), { errorMessage: "", page: page };
     }
     const message = "Landing success !";
-    console.log("Message:", message);
     res.render('adminPage', {
         page,
         images: [],
-        imageError: '',
-        message: "Landing successful"
+        imageError: ''
     });
 });
 

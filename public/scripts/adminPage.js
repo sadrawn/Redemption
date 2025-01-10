@@ -88,3 +88,9 @@ if (messageElement) {
         messageElement.classList.toggle('hidden');
     }, 3000); // 3000 milliseconds = 3 seconds
 }
+
+const mobileNavBar = document.querySelector('.mobileNavBar');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+hamburgerBtn.addEventListener('click', () => {
+    mobileNavBar.classList.toggle('hidden');
+})

@@ -1,0 +1,7 @@
+TODO 
+have to add padding to the login and signup form for mobile screen
+add options to read the other attributes from the data file and load them on the page or 
+instead of txt file create a json file for adding each pages attributes as json object into it then read them from it 
+
+add option to read the elders word data from the text file or json .
+
