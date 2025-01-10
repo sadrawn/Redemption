@@ -28,6 +28,10 @@ app.set('view engine', 'ejs');
 // Middleware for parsing request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+    res.locals.session = req.session;  // Make session data available in all views
+    next();
+});
 // Import routers
 const router = require('./routes/routes'); // General routes
 const adminRouter = require('./routes/adminRoutes'); // Admin page routes

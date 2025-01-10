@@ -3,8 +3,11 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const { db } = require('../database/database.js')
 // importing middleware functions 
 const { getImages, check_session } = require('../middleware');
+const bcrypt = require('bcrypt');
+const { get } = require('http');
 
 // multer storage
 const storage = multer.diskStorage({
@@ -20,6 +23,18 @@ const storage = multer.diskStorage({
 // Initialize multer with storage
 const upload = multer({ storage });
 
+// middleware function for running queries 
+function runQuery(SQL, params) {
+    return new Promise((resolve, reject) => {
+        db.run(SQL, params, function (err) {
+            if (err) {
+                reject(err);  // Reject the promise if there's an error
+            } else {
+                resolve(this);  // Resolve the promise with the current row (this) if success
+            }
+        });
+    });
+}
 
 // Logout GET route (removed session check)
 router.get('/logout', (req, res) => {
@@ -55,6 +70,32 @@ router.get('/setting', async (req, res) => {
     }
 });
 
+function getUser() {
+    return new Promise((resolve, reject) => {
+        const SQL = "SELECT * FROM users";
+        db.all(SQL, (err, rows) => {
+            if (err) {
+                return reject(err);
+            } else {
+                return resolve(rows);
+            }
+        });
+    });
+}
+
+// Route to get users
+router.get('/users', async (req, res) => {
+    try {
+        const rows = await getUser();
+        return res.render('adminPage', { page: 'users', users: rows });
+    } catch (err) {
+        console.error("Error fetching users:", err);
+        return res.render('adminPage', { page: 'users', message: "Error getting users", users: [] });
+    }
+});
+
+
+
 // Admin page handler (moved below specific routes)
 router.get('/:page', (req, res) => {
     const { page } = req.params;
@@ -65,10 +106,16 @@ router.get('/:page', (req, res) => {
     }
 
     if (!check_session(req)) {
-        return res.redirect('/');
+        return res.render('login'), { errorMessage: "", page: page };
     }
-
-    res.render('adminPage', { page, images: [], imageError: '' });
+    const message = "Landing success !";
+    console.log("Message:", message);
+    res.render('adminPage', {
+        page,
+        images: [],
+        imageError: '',
+        message: "Landing successful"
+    });
 });
 
 // ? POST
@@ -129,5 +176,81 @@ router.post('/logout', (req, res) => {
         res.redirect('/');
     });
 });
+async function hashPassword(password) {
+    const saltRounds = 10; // Number of rounds for salting
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        console.log("Password hashed successfully");
+        return hashedPassword;
+    } catch (err) {
+        console.error("Error hashing password:", err);
+        throw err;
+    }
+}
+// we should use async when we are using asyncronus middleware function in our route function
+router.post('/users/add', async (req, res) => {
+    const SQL = "INSERT INTO users (username, email, password, type) VALUES (?, ?, ?, ?)";
+    const { username, password } = req.body;
+
+    const email = `${username}@gmail.com`;
+    const type = 0;
+
+    try {
+        // Wait for the hashed password
+        const hashedPassword = await hashPassword(password);
+
+        // Log hashed password to verify
+        console.log("Hashed Password:", hashedPassword);
+
+        // Use the hashed password in your SQL query
+        db.run(SQL, [username, email, hashedPassword, type], function (err) {
+            if (err) {
+                console.error('Error inserting user:', err.message);
+                return res.status(500).send('Failed to add user.');
+            }
+
+            console.log(`User added successfully with ID: ${this.lastID}`);
+            res.redirect('/admin/users');
+        });
+    } catch (err) {
+        console.error("Error hashing password or inserting user:", err.message);
+        res.status(500).send('Internal server error.');
+    }
+});
+
+router.post('/users/delete/:id', (req, res) => {
+    const userID = req.params.id;
+    const SQL = "DELETE FROM users WHERE id = ?";
+    db.run(SQL, [userID], (err) => {
+        if (err) {
+            return res.send("Error deleting user. <a href='/admin/users'>Return to settings</a>");
+        }
+        return res.redirect('/admin/users');
+    });
+});
+
+router.post('/users/edit/:id', async (req, res) => {
+    const userID = req.params.id;
+    const { username, password, email } = req.body;
+    const SQL = "UPDATE users SET username = ?, password = ?, email = ?, type = 0 WHERE id = ?";
+
+    try {
+        // Hash the password
+        const hashedpass = await hashPassword(password);
+
+        // Run the update query using the wrapped db.run
+        await runQuery(SQL, [username, hashedpass, email, userID]);
+
+        // Get updated user data
+        const rows = await getUser();
+
+        // Render the page with updated user list and success message
+        return res.redirect('/admin/users?message=User+updated');
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send("Error updating user <a href='/admin/users'>Return to users</a>");
+    }
+});
+
 
 module.exports = router;

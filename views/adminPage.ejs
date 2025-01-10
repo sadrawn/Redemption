@@ -8,6 +8,22 @@
     <link rel="stylesheet" href="/css/main.css">
     <!-- awesome fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        #addUser {
+            transition: height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .h-0 {
+            height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .h-auto {
+            height: auto;
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -15,13 +31,18 @@
         <!-- Sidebar -->
         <div class="bg-darkGray text-white w-64 p-4 space-y-4">
             <h2 class="text-2xl font-bold cursor-default">Admin Panel</h2>
-            <nav>
+            <nav class="h-5/6">
                 <a href="/" class="block py-2 px-3 rounded bg-red-700">Go to Website</a>
                 <a href="/admin/dashboard" class="block py-2 px-3 rounded hover:bg-blue-700">Dashboard</a>
                 <a href="/admin/users" class="block py-2 px-3 rounded hover:bg-blue-700">Users</a>
                 <a href="/admin/setting" class="block py-2 px-3 rounded hover:bg-blue-700">Setting</a>
                 <a href="/admin/logout" class="block py-2 px-3 rounded hover:bg-blue-700">Logout</a>
             </nav>
+            <% if (typeof message !=='undefined' ) { %>
+                <p id="message" class="block py-2 px-3 bg-green-700 rounded">
+                    <%= message %>
+                </p>
+                <% } %>
         </div>
 
         <!-- Main Content -->
@@ -30,10 +51,88 @@
                 <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
             </div>
             <% } else if (page==='users' ) { %>
-                <div class="flex-1 p-6 bg-white" id="users">
-                    <h1 class="text-3xl font-bold mb-6">Users</h1>
-                </div>
-                <!-- setting -->
+                <section class="flex flex-col items-center p-6 w-full h-full">
+                    <div class="flex-1 p-6 bg-white shadow-md rounded-lg w-full max-w-4xl" id="users">
+                        <h1 class="text-3xl font-bold mb-6">Users</h1>
+
+                        <!-- Add New User Button -->
+                        <div class="flex justify-end mb-4">
+                            <p id="addUserBtn"
+                                class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition cursor-pointer">
+                                + Add New User
+                            </p>
+                        </div>
+                        <form id="addUser" class="w-full h-0 opacity-0 my-2 flex flex-col gap-2"
+                            action="/admin/users/add" method="post">
+                            <input type="text" name="username" id="username" placeholder="username"
+                                class="border border-gray-300 p-2">
+                            <input type="text" name="password" id="password" placeholder="password"
+                                class="border border-gray-300 p-2">
+                            <button type="submit"
+                                class="px-5 py-2 bg-blue-500 text-white transition duration-[0.25s] hover:bg-blue-700">Add</button>
+                        </form>
+
+                        <!-- User List -->
+                        <table class="w-full border-collapse border border-gray-300">
+                            <thead class="bg-gray-200">
+                                <tr>
+                                    <th class="border border-gray-300 px-4 py-2 text-left">Username</th>
+                                    <th class="border border-gray-300 px-4 py-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (typeof users !=='undefined' && users.length> 0) { %>
+                                    <% users.forEach(user=> { %>
+                                        <tr class="hover:bg-gray-100" id="<%= user.username %>">
+                                            <td class="border border-gray-300 px-4 py-2">
+                                                <%= user.username %>
+                                            </td>
+                                            <td
+                                                class="flex items-center gap-2 border border-gray-300 px-4 py-2 text-center">
+                                                <!-- Edit Button -->
+                                                <p
+                                                    class="userFormTrigger cursor-pointer bg-green-500 text-white px-4 py-1 rounded-full hover:bg-yellow-500 transition">
+                                                    Edit
+                                                </p>
+                                                <form class="editUser w-full h-0 opacity-0 my-2 flex flex-col gap-2"
+                                                    action="/admin/users/edit/<%= user.id %>" method="post">
+                                                    <input type="text" name="username" id="username"
+                                                        placeholder="username" class="border border-gray-300 p-2"
+                                                        value="<%= user.username %>">
+                                                    <input type="text" name="email" id="email" placeholder="Email"
+                                                        class="border border-gray-300 p-2" value="<%= user.email %>">
+                                                    <input type="text" name="password" id="password"
+                                                        placeholder="password" class="border border-gray-300 p-2"
+                                                        value="<%= user.password %>">
+                                                    <button type="submit"
+                                                        class="px-5 py-2 bg-blue-500 text-white transition duration-[0.25s] hover:bg-blue-700">Edit</button>
+                                                </form>
+
+                                                <!-- Delete Button -->
+                                                <form action="/admin/users/delete/<%= user.id %>" method="POST"
+                                                    class="inline-block">
+                                                    <button type="submit"
+                                                        class="bg-red-500 text-white px-4 py-1 rounded-full hover:bg-red-600 transition">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-gray-500 py-4">
+                                                        No users found.
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+
+                <!--  * setting -->
                 <% } else if (page==='setting' ) { %>
                     <div class="flex-1 p-6 bg-white overflow-x-scroll" id="setting">
                         <h1 class="text-3xl font-bold mb-6">Setting</h1>
@@ -43,7 +142,7 @@
                                     <% } %>
                         </h1>
                         <!-- Form -->
-                        <form class="flex justify-between border p-2 rounded-xl border-Red_1 items-center"
+                        <form class="flex justify-between border p-2 rounded-xl border-blue-500 items-center"
                             action="/admin/setting/upload" method="post" enctype="multipart/form-data">
                             <div class="flex w-auto gap-3">
                                 <button type="button" id="toggle-button"><i
@@ -54,7 +153,7 @@
                                 class="relative cursor-pointer flex justify-center items-center flex-1 h-[50px] text-center ">
                                 <div class="flex flex-col items-center justify-center">
                                     <div class="flex items-center">
-                                        <i class="fa fa-file mx-3 text-Red_1"></i>Select File
+                                        <i class="fa fa-file mx-3 text-blue-500"></i>Select File
                                     </div>
                                     <input type="file" class="appearance-none absolute inset-0 opacity-0 cursor-pointer"
                                         name="file" accept="image/*" id="fileInput" />
@@ -62,16 +161,16 @@
                                 </div>
                             </div>
                             <button type="submit"
-                                class="text-white w-[100px] h-[40px] rounded-full bg-Red_1 transition duration-[0.25s] hover:bg-white border border-Red_1 hover:text-Red_1">
+                                class="text-white w-[100px] h-[40px] rounded-full bg-blue-500 transition duration-[0.25s] hover:bg-white border hover:border-blue-500 hover:text-blue-500">
                                 Submit
                             </button>
                         </form>
                         <div id="grid-container"
-                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 my-2 gap-4 overflow-hidden transition-all duration-500 ease-in-out h-0 opacity-0">
+                            class="grid grid-cols-1 grid-rows-[1fr] sm:grid-cols-2 md:grid-cols-4 my-2 gap-4 overflow-hidden transition-all duration-500 ease-in-out h-auto opacity-100">
                             <% if (typeof images !=='undefined' && images.length> 0) { %>
                                 <% images.forEach(image=> { %>
                                     <div id="imageSelector"
-                                        class="imageSelector p-2 border border-gray-100 flex flex-col items-center text-center transition duration-200 hover:veryLightGray cursor-pointer">
+                                        class="imageSelector p-2 border border-gray-100 rounded-lg flex flex-col items-center text-center transition duration-200 hover:veryLightGray cursor-pointer">
                                         <img src="<%= image %>" alt="<%= image.split('/').pop() %>"
                                             class="w-[300px] h-[300px] object-cover rounded-md">
                                     </div>
@@ -99,7 +198,6 @@
                                                     </form>
                                                 </div>
                         </div>
-
                         <% } else if (page==='logout' ) { %>
                             <div class="flex-1 p-6 bg-white" id="logout">
                                 <h1 class="text-3xl font-bold mb-6">Do you want to logout?</h1>
@@ -111,48 +209,11 @@
                                 </form>
                             </div>
                             <% } %>
-
                     </div>
+                    <script src="/scripts/adminPage.js"></script>
                     <script>
-                        const gridContainer = document.getElementById('grid-container');
-                        const toggleButton = document.getElementById('toggle-button');
+                      
 
-                        toggleButton.addEventListener('click', () => {
-                            if (gridContainer.classList.contains('h-0')) {
-                                // Show the grid
-                                gridContainer.classList.remove('h-0', 'opacity-0');
-                                gridContainer.classList.add('h-auto', 'opacity-100');
-                            } else {
-                                // Hide the grid
-                                gridContainer.classList.remove('h-auto', 'opacity-100');
-                                gridContainer.classList.add('h-0', 'opacity-0');
-                            }
-                        });
-                        const imageSelector = document.querySelectorAll('.imageSelector');
-                        const hiddenInput = document.getElementById('hiddenInput');
-
-                        imageSelector.forEach((image) => {
-                            image.addEventListener('click', () => {
-                                // Remove 'selected' and 'bg-blue-500' from all images
-                                imageSelector.forEach((img) => {
-                                    img.classList.remove('selected');
-                                    img.classList.remove('bg-gray-500');
-                                });
-
-                                // Add 'selected' and 'bg-blue-500' to the clicked image
-                                image.classList.add('selected');
-                                image.classList.add('bg-gray-500');
-
-                                // Update hidden input value to the clicked image's src
-                                let ha = image.querySelector('img').src.split('/');
-                                hiddenInput.value = ha[4];
-                            });
-                        });
-                        const fileInput = document.getElementById('fileInput');
-                        fileInput.addEventListener('input', () => {
-                            const p = document.getElementById('file-state');
-                            p.textContent = fileInput.files[0].name;
-                        })
                     </script>
 </body>
 

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body class="bg-darkGray text-white flex items-center justify-center min-h-screen">
+
+    <!-- Signup Form Container -->
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 class="text-3xl font-bold text-center text-red-500 mb-6">Signup</h2>
+
+        <!-- Form -->
+        <form action="/signup" method="POST" class="space-y-4">
+            <!-- Error Message Display -->
+            <h1 class="text-red-500">
+                <% if (typeof errorMessage !== 'undefined') { %>
+                    <%= errorMessage %>
+                <% } %>
+                <% if (typeof page !== 'undefined') { %>
+                    <input type="hidden" name="page" value="<%= page %>">
+                <% } %>
+            </h1>
+
+            <!-- Username Field -->
+            <div>
+                <label for="username" class="block text-sm font-medium text-white">Username</label>
+                <input type="text" id="username" name="username"
+                    class="w-full p-3 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white"
+                    placeholder="Enter your username" required>
+            </div>
+
+            <!-- Email Field -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-white">Email</label>
+                <input type="email" id="email" name="email"
+                    class="w-full p-3 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white"
+                    placeholder="Enter your email" required>
+            </div>
+
+            <!-- Password Field -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-white">Password</label>
+                <input type="password" id="password" name="password"
+                    class="w-full p-3 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white"
+                    placeholder="Enter your password" required>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div>
+                <label for="confirmPassword" class="block text-sm font-medium text-white">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword"
+                    class="w-full p-3 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white"
+                    placeholder="Confirm your password" required>
+            </div>
+
+            <!-- User Type (Optional) -->
+            <div>
+                <label for="type" class="block text-sm font-medium text-white">User Type</label>
+                <select id="type" name="type"
+                    class="w-full p-3 mt-2 rounded border border-gray-600 bg-veryDarkBlue text-white">
+                    <option value="0">Regular User</option>
+                    <option value="1">Admin</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div>
+                <button type="submit"
+                    class="w-full p-3 bg-red-500 text-white font-bold rounded hover:bg-red-600">Signup</button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="text-center mt-4">
+                <p class="text-sm text-gray-400">Already have an account? <a href="/login" class="text-red-500">Login</a>
+                </p>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>

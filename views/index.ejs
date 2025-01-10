@@ -22,6 +22,10 @@
                 <a href="/cryptography" class="text-white hover:text-darkGrayishBlue">Cryptography</a>
                 <a href="https://t.me/RedemptionArcHQ" target="_blank"
                     class="text-white hover:text-darkGrayishBlue">Telegram Chanel</a>
+                <% if (session && session.login){ %>
+                    <a href="/admin/dashboard" target="_blank"
+                        class="text-white hover:text-darkGrayishBlue">adminPage</a>
+                    <% } %>
             </div>
 
             <!-- Hamburger Button (for small screens) -->
@@ -88,7 +92,7 @@
 
     <footer class="bg-veryDarkBlue w-full h-[50px] flex items-center justify-center font-bold text-white">We are always
         4 steps a head!</footer>
-    <script src="/scripts/miras.js"></script>
+    <script src="/scripts/index.js"></script>
 </body>
 
 </html>

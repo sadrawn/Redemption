@@ -18,7 +18,12 @@
         <form action="/hktpuwhnl" method="POST" class="space-y-4">
             <!-- Username Field -->
             <h1 class="text-red-500">
-                <%= errorMessage %>
+                <% if (typeof errorMessage !=='undefined' ){ %>
+                    <%= errorMessage %>
+                        <% } %>
+                            <% if (typeof page !=='undefined' ){ %>
+                                <input type="hidden" name="" value="<%= page %>">
+                                <% } %>
             </h1>
             <div>
                 <label for="username" class="block text-sm font-medium text-white">Username</label>
@@ -43,7 +48,7 @@
 
             <!-- Register Link -->
             <div class="text-center mt-4">
-                <p class="text-sm text-gray-400">Don't have an account? Be tokhmam
+                <p class="text-sm text-gray-400">Don't have an account? <a href="/signup">signup</a>
                 </p>
             </div>
         </form>

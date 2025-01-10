@@ -45,7 +45,9 @@ async function checkAdminLogin(username, password) {
     });
 }
 
-
+router.get('/login', (req, res) => {
+    res.render('login');
+})
 // Define routes
 router.get('/', (req, res) => {
     fs.readFile(path.resolve(__dirname, '../data/bg.txt'), (err, image) => {
@@ -61,6 +63,9 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/signup', (req, res) => {
+    res.render('signup');
+})
 router.get('/cryptography', (req, res) => {
     res.render('Cryptography');
 })
@@ -72,7 +77,7 @@ router.get('/hktpuwhnl', (req, res) => {
 
 
 router.post('/hktpuwhnl', async (req, res) => {
-    let { username, password } = req.body;
+    let { username, password, page } = req.body;
     try {
         // Check if admin login is valid or not using async/await
         const isValid = await checkAdminLogin(username, password);
@@ -84,7 +89,12 @@ router.post('/hktpuwhnl', async (req, res) => {
             console.log("Admin login successful");
             req.session.login = true;
             req.session.type = 0;
-            res.redirect('/admin/dashboard');
+            if (page) {
+                res.redirect(`/admin/${page}`);
+            }
+            else {
+                res.redirect('/admin/dashboard');
+            }
         }
 
     } catch (err) {
@@ -93,6 +103,46 @@ router.post('/hktpuwhnl', async (req, res) => {
     }
 });
 
+router.post('/signup', async (req, res) => {
+    const { username, email, password, confirmPassword, type } = req.body;
+
+    // Basic Validation
+    if (!username || !email || !password || !confirmPassword) {
+        return res.render('signup', { errorMessage: 'All fields are required.' });
+    }
+
+    if (password !== confirmPassword) {
+        return res.render('signup', { errorMessage: 'Passwords do not match.' });
+    }
+
+    // Check if Username or Email Already Exists
+    const checkUserSQL = `SELECT * FROM users WHERE username = ? OR email = ?`;
+    db.get(checkUserSQL, [username, email], async (err, row) => {
+        if (err) {
+            console.error(err);
+            return res.render('signup', { errorMessage: 'Database error. Please try again.' });
+        }
+
+        if (row) {
+            return res.render('signup', { errorMessage: 'Username or email already exists.' });
+        }
+
+        // Hash Password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Insert New User
+        const insertUserSQL = `INSERT INTO users (username, password, email, type) VALUES (?, ?, ?, ?)`;
+        db.run(insertUserSQL, [username, hashedPassword, email, type || 0], (err) => {
+            if (err) {
+                console.error(err);
+                return res.render('signup', { errorMessage: 'Error creating account. Please try again.' });
+            }
+
+            // Redirect to Login Page After Successful Signup
+            res.redirect('/login');
+        });
+    });
+});
 
 // Export the router
 module.exports = router;
